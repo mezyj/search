@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="./jquery-3.1.1.min.js"></script>
+</head>
+
+<body>
+    <div class="box">
+        <input type="text" class="ipt">
+        <button class="btn">百度一下</button>
+        <div class="hos">
+
+        </div>
+        <div class="list">
+
+        </div>
+    </div>
+</body>
+<script>
+    $(function() {
+        var ipt = document.querySelector('input');
+        var hos = document.querySelector('.hos');
+        var btn = document.querySelector('.btn');
+        var list = document.querySelector('.list');
+        ipt.oninput = function() {
+            var val = this.value;
+            if (val) {
+                $.ajax({
+                    url: '/api/search',
+                    data: {
+                        val: val
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        var str = '';
+                        // console.log(res)
+                        res.datas.forEach(function(item) {
+                            str += `<p>${item}</p>`
+                        })
+                        hos.innerHTML = str
+                    }
+                })
+            }
+
+
+        }
+        $('.hos').on('click', 'p', function() {
+            var key = $(this).html();
+            $('.ipt').val(key);
+            // $('.hos').hide()
+        })
+        btn.onclick = function() {
+            var ll = ipt.value;
+            $.ajax({
+                url: '/api/searchList',
+                data: {
+                    val: ll
+                },
+                dataType: 'json',
+                success: function(res) {
+                    var str = '';
+                    res.datas.forEach(function(item) {
+                        item.forEach(function(i) {
+                            str += `<p>${i.news}</p>`
+                        })
+
+                    })
+                    list.innerHTML = str
+                }
+            })
+        }
+    })
+</script>
+
+</html>
